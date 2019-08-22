@@ -1,0 +1,1 @@
+@load ./scripts/main.bro
