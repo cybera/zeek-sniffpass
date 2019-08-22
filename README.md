@@ -32,3 +32,8 @@ There are `curl` command examples inside `tests/curl.sh` that can be used to che
     ```
     redef ignore_checksums = T;
     ```
+
+# Created By
+Andrew Klaus (Cybera)
+
+This module was inspired by the University of Alberta's 2019 CUCCIO Innovation Award Plaintext Password Sniffing Project.
