@@ -13,6 +13,7 @@ export {
     const log_password_sha1 = F &redef;
     const log_password_sha256 = F &redef;
     const post_body_limit = 300 &redef;
+    const notice_log_enable = T &redef;
 }
 
 type SPStorage: record {
@@ -90,7 +91,7 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
             }
         }
 
-        if ( password_seen ) {
+        if ( password_seen && notice_log_enable ) {
             if ( c$http?$post_username && |c$http$post_username| > 0 )
             {
                NOTICE([$note=HTTP_POST_Password_Seen,

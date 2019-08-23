@@ -26,6 +26,11 @@ By default it will not log passwords, but only log the username in a `post_usern
     redef SNIFFPASS::log_password_sha1 = T;
     redef SNIFFPASS::log_password_sha256 = T;
     ```
+- You can disable logging to notice.log using this flag:
+    ```
+    redef SNIFFPASS::notice_log_enable = F;
+    ```
+
 - By default, only the first 300 bytes of an HTTP POST request are parsed. This can be changed by adding the following to your `local.bro` file and setting your own value:
     ```
     redef SNIFFPASS::post_body_limit = 300
