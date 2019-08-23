@@ -5,6 +5,14 @@ By default it will not log passwords, but only log the username in a `post_usern
  and create an entry in `notice.log` that a password was observed.
 
 # Installation
+- Install via Zeek package manager:
+   ```bash
+   $ zkg install zeek-sniffpass
+
+   # or for legacy installs
+
+   $ bro-pkg install zeek-sniffpass
+   ```
 - Download the files to `$PREFIX/bro/share/bro/site/sniffpass` and add the following to your `local.bro`:
     ```bash
     @load ./sniffpass
@@ -36,4 +44,4 @@ There are `curl` command examples inside `tests/curl.sh` that can be used to che
 # Created By
 Andrew Klaus (Cybera)
 
-This module was inspired by the University of Alberta's 2019 CUCCIO Innovation Award Plaintext Password Sniffing Project.
+_This module was inspired by the University of Alberta's 2019 CUCCIO Innovation Award Plaintext Password Sniffing Project._
