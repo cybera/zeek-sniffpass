@@ -1,3 +1,7 @@
+# Sniffpass
+
+[![Build Status](https://travis-ci.org/cybera/zeek-sniffpass.svg?branch=master)](https://travis-ci.org/cybera/zeek-sniffpass)
+
 # Description
 Sniffpass will alert on cleartext passwords discovered in HTTP POST requests.
 
@@ -36,8 +40,8 @@ By default it will not log passwords, but only log the username in a `post_usern
     redef SNIFFPASS::post_body_limit = 300
     ```
 
-# Testing
-There are `curl` command examples inside `tests/curl.sh` that can be used to check if Zeek is properly parsing HTTP POST requests.
+# Automated Testing
+Automated tests are done against the `http_post.trace` file with Travis CI.
 
 # Troubleshooting
 - If you are having any issues, ensure that you have TCP Checksumming disabled in your `local.bro` file, as per [Zeek Documentation](https://www.zeek.org/documentation/faq.html#why-isn-t-zeek-producing-the-logs-i-expect-a-note-about-checksums)

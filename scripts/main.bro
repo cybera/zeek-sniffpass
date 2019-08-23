@@ -3,8 +3,8 @@
 
 module SNIFFPASS;
 
-global username_fields = set("USERNAME", "USRNAME", "EMAIL", "USER", "USR", "LOGIN", "NAME", "AUTH", "LOG");
-global password_fields = set("PASSWORD", "PASS", "PWD", "SECRET");
+global username_fields = set("USERNAME", "USRNAME", "UNAME", "EMAIL", "USER", "USR", "LOGIN", "NAME", "AUTH", "LOG");
+global password_fields = set("PASSWORD", "PASS", "PSW", "PWD", "SECRET");
 
 export {
     const log_username = T &redef;

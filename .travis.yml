@@ -1,0 +1,16 @@
+---
+language: python
+
+dist: bionic
+
+os:
+  - linux
+
+before_install:
+  - sudo apt-get update -q
+  - sudo apt-get install -y bro
+
+script:
+  - bro -Cr tests/http_post.trace -b scripts/main.bro
+  - egrep "username(1|2|3|4)" http.log |wc -l |grep -q 4
+  - egrep "username(1|2|3|4)" notice.log |wc -l |grep -q 4
