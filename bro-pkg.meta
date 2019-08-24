@@ -1,5 +1,5 @@
 [package]
-script_dir = bro
+script_dir = scripts
 description = Sniffpass will alert on cleartext passwords discovered in HTTP POST requests
 tags = password, logging
 version = 0.0.1
