@@ -25,7 +25,7 @@ By default it will not log passwords, but only log the username in a `post_usern
 # Configuring
 - You can enable different types of password logging. Add one (or more) of the following options to your `local.bro` file:
     ```
-    redef SNIFFPASS::log_password_plain = T;
+    redef SNIFFPASS::log_password_plaintext = T;
     redef SNIFFPASS::log_password_md5 = T;
     redef SNIFFPASS::log_password_sha1 = T;
     redef SNIFFPASS::log_password_sha256 = T;
@@ -39,6 +39,61 @@ By default it will not log passwords, but only log the username in a `post_usern
     ```
     redef SNIFFPASS::post_body_limit = 300
     ```
+
+# Broker Support
+Zeek can use Broker to publish discovered username and passwords. This can be useful in cases where credentials shouldn't be
+saved to disk in a Zeek log file, but instead have them handled by a script. One use case of this is sending them to an API to retire valid credentials seen.
+
+- Broker publishing is disabled by default, but can be enabled using this flag:
+    ```
+    redef SNIFFPASS::broker_enable = T;
+    redef SNIFFPASS::broker_host = 9999/tcp;
+    redef SNIFFPASS::broker_port = "127.0.0.1";
+    ```
+- You can change the topic to something other than the default:
+    ```
+    redef SNIFFPASS::broker_topic = "/sniffpass/credentials_seen";
+    ```
+## Example Broker Python Script
+This example was borrowed from the [Broker documentation](https://docs.zeek.org/projects/broker/en/stable/python.html)
+
+    import broker
+    import sys
+
+    # Setup endpoint and connect to Zeek.
+    ep = broker.Endpoint()
+    sub = ep.make_subscriber("/sniffpass/credentials_seen")
+    ss = ep.make_status_subscriber(True);
+    ep.peer("127.0.0.1", 9999)
+
+    # Wait until connection is established.
+    st = ss.get()
+
+    if not (type(st) == broker.Status and st.code() == broker.SC.PeerAdded):
+        print("could not connect")
+        sys.exit(0)
+
+    while True:
+        (t, d) = sub.get()
+        event = broker.zeek.Event(d)
+        print("received {}{}".format(event.name(), event.args()))
+
+Will give output like this when plaintext credentials are seen:
+
+    $ python test_broker.py
+    received SNIFFPASS::credentials_seen[u'my_username', u'Thi1sI$myP@ssw0rd']
+
+## Detailed Broker Output
+There is an option to also include Destination IP, Destination Port, and full URL in the Broker output.
+
+You can enable a more detailed output in Broker:
+
+    redef SNIFFPASS::broker_detailed = T;
+
+The output from the Example Python Script:
+
+    $ python test_broker.py
+    received SNIFFPASS::credentials_seen_detailed[(u'my_username', u'Thi1sI$myP@ssw)rd'), IPv4Address(u'127.0.0.1'), 80/tcp, u'localhost/']
 
 # Automated Testing
 Automated tests are done against the `http_post.trace` file with Travis CI.
