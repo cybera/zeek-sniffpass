@@ -12,5 +12,5 @@ before_install:
 
 script:
   - bro -Cr tests/http_post.trace -b scripts/main.bro
-  - egrep "username(1|2|3|4)" http.log |wc -l |grep -q 4
-  - egrep "username(1|2|3|4)" notice.log |wc -l |grep -q 4
+  - egrep "username[1-5]" http.log |wc -l |grep -q 5
+  - egrep "username[1-5]" notice.log |wc -l |grep -q 5

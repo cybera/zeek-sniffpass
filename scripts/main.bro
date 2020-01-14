@@ -1,5 +1,6 @@
 @load base/protocols/http
 @load base/frameworks/notice
+@load base/utils/urls
 
 module SNIFFPASS;
 
@@ -45,6 +46,7 @@ redef record HTTP::Info += {
 
 redef enum Notice::Type += {
     HTTP_POST_Password_Seen,
+    HTTP_GET_Password_Seen,
 };
 
 redef record connection += {
@@ -63,6 +65,26 @@ function cred_handler(cred: Credential, c: connection)
     else
     {
         event SNIFFPASS::credentials_seen(cred);
+    }
+}
+
+event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string)
+{
+    if ( method == "GET") {
+        # Need to first parse the URI into something usable
+        local uri_parsed = decompose_uri(unescaped_URI);
+
+        for ([p] in uri_parsed$params) {
+            if (to_upper(p) in password_fields) {
+                c$http$post_password_plain = uri_parsed$params[p];
+
+                if (notice_log_enable) {
+                    NOTICE([$note=HTTP_GET_Password_Seen,
+                    $msg="Password found",
+                    $conn=c ]);
+                }
+            }
+        }
     }
 }
 
@@ -99,7 +121,7 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
     if ( is_orig && c?$sp && c$sp$inspect_post_data )
     {
         local post_parsed = split_string(c$sp$post_data, /&/);
-        local password_seen = F;
+        local post_password_seen = F;
 
         for (p in post_parsed) {
             local kv = split_string1(post_parsed[p], /=/);
@@ -109,7 +131,7 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
             }
             if (to_upper(kv[0]) in password_fields) {
                 local password_value = kv[1];
-                password_seen = T;
+                post_password_seen = T;
 
                 if ( log_password_plaintext )
                     c$http$post_password_plain = password_value;
@@ -122,7 +144,7 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
             }
         }
 
-        if ( password_seen ) {
+        if ( post_password_seen ) {
             if ( |username_value| > 0 )
             {
                 local cred = Credential($username = username_value, $password = password_value);
