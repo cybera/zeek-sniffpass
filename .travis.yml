@@ -8,9 +8,12 @@ os:
 
 before_install:
   - sudo apt-get update -q
-  - sudo apt-get install -y bro
+  - echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_18.04/ /' | sudo tee /etc/apt/sources.list.d/security:zeek.list
+  - sudo wget -nv https://download.opensuse.org/repositories/security:zeek/xUbuntu_18.04/Release.key -O "/etc/apt/trusted.gpg.d/security:zeek.asc"
+  - sudo apt-get update -q
+  - sudo apt-get install -y zeek
 
 script:
-  - bro -Cr tests/http_post.trace -b scripts/main.bro
+  - /opt/zeek/bin/zeek -Cr tests/http_post.trace -b scripts/main.bro
   - egrep "username(1|2|3|4)" http.log |wc -l |grep -q 4
   - egrep "username(1|2|3|4)" notice.log |wc -l |grep -q 4
