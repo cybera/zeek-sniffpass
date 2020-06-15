@@ -157,9 +157,12 @@ event bro_init()
     @ifdef (Broker::auto_publish)
         if (SNIFFPASS::broker_enable)
         {
-            Broker::listen(SNIFFPASS::broker_host, SNIFFPASS::broker_port);
-            Broker::auto_publish(SNIFFPASS::broker_topic, SNIFFPASS::credentials_seen);
-            Broker::auto_publish(SNIFFPASS::broker_topic, SNIFFPASS::credentials_seen_detailed);
+            # When in cluster mode, only workers should connect to broker_host
+            if ( (Cluster::is_enabled() && Cluster::local_node_type() == Cluster::WORKER ) || ! Cluster::is_enabled() ) {
+                Broker::peer(SNIFFPASS::broker_host, SNIFFPASS::broker_port);
+                Broker::auto_publish(SNIFFPASS::broker_topic, SNIFFPASS::credentials_seen);
+                Broker::auto_publish(SNIFFPASS::broker_topic, SNIFFPASS::credentials_seen_detailed);
+            }
         }
     @endif
 }
