@@ -146,12 +146,7 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
     }
 }
 
-# Use zeek_init for version 3+
-@ifdef ( zeek_init )
 event zeek_init()
-@else
-event bro_init()
-@endif
 {
     # Only use Broker if it's available
     @ifdef (Broker::auto_publish)
