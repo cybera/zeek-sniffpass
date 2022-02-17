@@ -100,15 +100,17 @@ event http_message_done(c: connection, is_orig: bool, stat: http_message_stat)
     {
         local post_parsed = split_string(c$sp$post_data, /&/);
         local password_seen = F;
+        local username_value = "";
+        local password_value = "";
 
         for (p in post_parsed) {
             local kv = split_string1(post_parsed[p], /=/);
             if (to_upper(kv[0]) in username_fields) {
-                local username_value = kv[1];
+                username_value = kv[1];
                 c$http$post_username = username_value;
             }
             if (to_upper(kv[0]) in password_fields) {
-                local password_value = kv[1];
+                password_value = kv[1];
                 password_seen = T;
 
                 if ( log_password_plaintext )
