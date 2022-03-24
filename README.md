@@ -15,15 +15,15 @@ By default it will not log passwords, but only log the username in a `post_usern
 
    # or for legacy installs
 
-   $ bro-pkg install zeek-sniffpass
+   $ zkg install zeek-sniffpass
    ```
-- Download the files to `$PREFIX/bro/share/bro/site/sniffpass` and add the following to your `local.bro`:
+- Download the files to `$PREFIX/zeek/share/zeek/site/sniffpass` and add the following to your `local.zeek`:
     ```bash
     @load ./sniffpass
     ```
 
 # Configuring
-- You can enable different types of password logging. Add one (or more) of the following options to your `local.bro` file:
+- You can enable different types of password logging. Add one (or more) of the following options to your `local.zeek` file:
     ```
     redef SNIFFPASS::log_password_plaintext = T;
     redef SNIFFPASS::log_password_md5 = T;
@@ -35,7 +35,7 @@ By default it will not log passwords, but only log the username in a `post_usern
     redef SNIFFPASS::notice_log_enable = F;
     ```
 
-- By default, only the first 300 bytes of an HTTP POST request are parsed. This can be changed by adding the following to your `local.bro` file and setting your own value:
+- By default, only the first 300 bytes of an HTTP POST request are parsed. This can be changed by adding the following to your `local.zeek` file and setting your own value:
     ```
     redef SNIFFPASS::post_body_limit = 300
     ```
@@ -103,7 +103,7 @@ The output from the Example Python Script:
 Automated tests are done against the `http_post.trace` file with Travis CI.
 
 # Troubleshooting
-- If you are having any issues, ensure that you have TCP Checksumming disabled in your `local.bro` file, as per [Zeek Documentation](https://www.zeek.org/documentation/faq.html#why-isn-t-zeek-producing-the-logs-i-expect-a-note-about-checksums)
+- If you are having any issues, ensure that you have TCP Checksumming disabled in your `local.zeek` file, as per [Zeek Documentation](https://www.zeek.org/documentation/faq.html#why-isn-t-zeek-producing-the-logs-i-expect-a-note-about-checksums)
 
     ```
     redef ignore_checksums = T;
